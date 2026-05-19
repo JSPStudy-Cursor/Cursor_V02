@@ -1,0 +1,76 @@
+[프롬프트 1]
+C드라이브에 C:/WeTube/ch02 밑에 있는 폴더와 파일을 ch03으로 복사해줘.
+
+[프롬프트 2]
+디렉토리구조.txt를 참고하여 파일은 아직 만들지 말고 디렉토리 구조만 만들어줘.
+
+[프롬프트 3]
+https://lsy3709.pythonanywhere.com/ 사이트를 참고하여 로그인 전과 로그인 후에 화면(base.html)을 templates 폴더 안에 만들어 주고 로그인 계정의 아이디는 aaa 이고 비번은 123456 이다. 오른쪽 밑에 라이트 모드 다크 모드 설정 아이콘과 기능 추가해줘. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 4]
+https://lsy3709.pythonanywhere.com/auth/register
+https://lsy3709.pythonanywhere.com/auth/login
+사이트를 각각 참고하여 auth 폴더에 회원가입 양식 페이지(register.html)과 로그인 페이지(login.html)를 만들어 줘. 로그인 계정의 아이디는 aaa 이고 비번은 123456 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 5]
+https://lsy3709.pythonanywhere.com/auth/profile 사이트를 참고하여 auth 폴더에 회원정보 수정 페이지 (profile.html)를 만들어줘. 로그인 계정의 아이디는 aaa 이고 비번은 123456 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 5-1]
+회원정보 수정 페이지에 프로필 사진 변경을 선택 할 수 있는 기능 추가해줘.
+
+[프롬프트 6]
+https://lsy3709.pythonanywhere.com/studio/ 사이트를 참고하여 studio 폴더에 메인 페이지(index.html)를 만들어줘. 아이디는 aaa 이고 비번은 123456 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 7]
+https://lsy3709.pythonanywhere.com/studio/upload 사이트를 참고하여 studio 폴더에 업로드 페이지 (upload.html)를 만들어줘. 아이디는 aaa 이고 비번은 123456 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 7-1]
+단 왼쪽 로고를 그림과 같이 만들어줘.
+
+[프롬프트 8]
+https://lsy3709.pythonanywhere.com/studio/edit 사이트를 참고하여 studio 폴더에 영상 수정 페이지(edit.html)를 만들어줘. 아이디는 aaa 이고 비번은 123456 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 9-0]
+https://lsy3709.pythonanywhere.com/ 사이트를 참고하여 동영상 리스트를 몇 개 만들어줘.
+
+[프롬프트 9]
+https://lsy3709.pythonanywhere.com/watch/ 사이트를 참고하여 main 폴더에 영상 뷰 페이지(watch.html)를 만들어줘. 아이디는 aaa 이고 비번은 123456 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 10]
+https://lsy3709.pythonanywhere.com/search?q=ddd 사이트를 참고하여 main 폴더에 영상 찾기 기능 페이지 (search.html)를 만들어줘. 아이디는 aaa 이고 비번은 123456 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 11-0]
+https://lsy3709.pythonanywhere.com/ 사이트를 참고하여 스튜디오 링크 앞에 구독 링크 버튼 만들어줘.
+
+[프롬프트 11]
+https://lsy3709.pythonanywhere.com/subscriptions 사이트를 참고하여 main 폴더에 구독을 클릭하면 구독 된 영상 리스트 보여주는 기능 페이지(subscriptions.html)를 만들어줘. 아이디는 aaa 이고 비번은 123456 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 12]
+https://lsy3709.pythonanywhere.com/tag/cafe/ 사이트를 참고하여 main 폴더에 인기 태그를 클릭하면 영상 리스트 보여주는 기능 페이지(tag.html)를 만들어줘. 아이디는 aaa 이고 비번은 123456 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프록프트 13]
+https://lsy3709.pythonanywhere.com/user/lsye 사이트를 참고하여 main 폴더에 영상에 닉네임을 클릭하면 그 사람의 채널 리스트를 보여주는 기능 페이지(user_profile.html)를 만들어줘. 아이디는 aaa 이고 비번은 123456 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 14]
+https://lsy3709.pythonanywhere.com/admin 사이트를 참고하여 admin 폴더에 관리자가 로그인하여 DB관리 메뉴를 클릭했을 때 보여주는 기능의 페이지(index.html)를 만들어줘. 관리자 계정의 아이디는 admin이고 비번은 admin1234 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 14-1]
+사용자와 관리자 로그인 페이지는 똑같이 사용하고 만약 admin으로 로그인 한다면 DB관리 링크를 상단 메뉴에 추가 해줘.
+
+[프롬프트 15]
+https://lsy3709.pythonanywhere.com/admin/users 사이트를 참고하여 admin 폴더에 관리자가 로그인을 했을 때 관리자 대시보드에서 회원관리 페이지(users.html)를 만들어줘. 관리자 계정의 아이디는 admin이고 비번은 admin1234 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 16]
+https://lsy3709.pythonanywhere.com/admin/videos 사이트를 참고하여 admin 폴더에 관리자가 로그인을 했을 때 관리자 대시보드에서 비디오 관리 페이지(videos.html)를 만들어줘. 관리자 계정의 아이디는 admin이고 비번 은 admin1234 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 17]
+https://lsy3709.pythonanywhere.com/admin/comments 사이트를 참고하여 admin 폴더에 관리자가 로그인을 했을 때 관리자 대시보드에서 댓글 관리 페이지(comments.html)를 만들어줘. 관리자 계정의 아이디는 admin이고 비번은 admin1234 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 18]
+https://lsy3709.pythonanywhere.com/admin/database 사이트를 참고하여 admin 폴더에 관리자가 로그인을 했을 때 관리자 대시보드에서 database 관리 페이지(database.html)를 만들어줘. 관리자 계정의 아이디는 admin이 고 비번은 admin1234 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 19]
+https://lsy3709.pythonanywhere.com/admin/table/comments 사이트를 참고하여 admin 폴더에 관리자가 로그인을 했을 때 관리자 대시보드 database 관리 페이지(database.html)에서 comments 테이블을 클릭하면 해당하는 테이블의 정보를 보여주는 페이지(table_view.html)를 만들어줘. 관리자 계정의 아이디는 admin이고 비번은 admin1234 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.
+
+[프롬프트 20]
+https://lsy3709.pythonanywhere.com/admin/query 사이트를 참고하여 admin 폴더에 관리자가 로그인을 했을 때 관리자 대시보드 database 관리 페이지에서 Query문 실행하는 페이지(query.html)를 만들어줘. 관리자 계정의 아이디 는 admin이고 비번은 admin1234 이다. Front end 부터 먼저 만들 테니 Database 및 Back end 기능은 제외해줘.

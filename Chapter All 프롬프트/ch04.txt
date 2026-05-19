@@ -1,0 +1,55 @@
+[프롬프트 1]
+C드라이브에 C:/WeTube/ch03 밑에 있는 폴더와 파일을 ch04으로 복사해줘.
+
+[프롬프트 2]
+instance 폴더 안에 wetube.py 파일을 만들어 SQLite를 사용하여 instance/wetube.db 파일이 자동 생성되도록 구성하고 다음과 같은 table을 만들어줘.
+CREATE TABLE IF NOT EXISTS users (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+username VARCHAR(80) NOT NULL UNIQUE,
+email VARCHAR(120) NOT NULL UNIQUE,
+nickname VARCHAR(80) NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+[프롬프트 3]
+커서에 SQLite Viewer 확장 프로그램(Extension) 설치하고 실행해줘.
+INSERT INTO users (username, email, nickname)
+VALUES ('alice', 'alice@email.com', '앨리스');
+INSERT INTO users (username, email, nickname)
+VALUES ('bob', 'bob@email.com', '밥');
+INSERT INTO users (username, email)
+VALUES ('charlie', 'charlie@email.com');
+3개의 insert문 실행해줘.
+
+[프롬프트 4]
+SQLite로 users 테이블을 만들어줘.
+열(column)은 다음과 같이:
+- id: 정수, 자동 증가, 기본 키
+- username: 최대 80자 문자열, 필수, 중복 불가
+- email: 최대 120자 문자열, 필수, 중복 불가
+- password_hash: 최대 255자 문자열, 필수
+- nickname: 최대 80자 문자열, 선택
+- profile_image: 최대 255자 문자열, 선택
+- is_admin: 불리언, 필수, 기본값 0
+- created_at: 타임스탬프, 기본값 현재 시각
+- updated_at: 타임스탬프, 기본값 현재 시각
+username과 email에는 검색 속도를 위한 인덱스도 만들어줘.
+
+[프롬프트 5]
+users 테이블에 테스트용 사용자 3명을 추가해줘.
+- 첫 번째: username은 'alice', email은 'alice@email.com', nickname은 '앨리스'
+- 두 번째: username은 'bob', email은 'bob@email.com', nickname은 '밥'
+- 세 번째: username은 'admin', email은 'admin@wetube.com', nickname은 '관리자', is_admin은 1
+password_hash는 임의의 해시값으로 넣어줘.
+
+[프롬프트 6]
+users 테이블에서 관리자(is_admin이 1)인 사용자의 username과 email만 조회해줘.
+
+[프롬프트 6-1]
+users 테이블에서 2025년 1월 이후에 가입한 사용자를 최근 가입 순서대로 보여줘. nickname이 없는 사용자는 제외해줘.
+
+[프롬프트 7]
+users 테이블에서 username이 'alice'인 사용자의 nickname을 '앨리스(수정됨)'으로 바꾸고, updated_at을 현재 시각으로 갱신해줘.
+
+[프롬프트 8]
+users 테이블에서 username이 'bob'인 사용자를 삭제해줘.
