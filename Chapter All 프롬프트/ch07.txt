@@ -1,0 +1,104 @@
+7.1
+프롬프트1 : Flask 프로젝트의 회원가입 기능을 구현해주세요.
+다음 4단계의 작업을 순서대로 진행해서 필요한 코드를 작성해 주세요.
+[1단계: Flask-Login 초기화 (app/__init__.py)]
+- Flask-Login의 LoginManager를 초기화하고 app에 등록해주세요.
+- 로그인 페이지의 엔드포인트는 auth.login으로 설정해주세요.
+- 사용자 ID로 유저를 다시 불러오는 @user_loader 함수를 작성해주세요.
+[2단계: User 모델 보안 강화 (app/models.py)]
+- User 모델이 Flask-Login을 사용할 수 있도록 UserMixin을 상속받게 해주세요.
+- 비밀번호를 안전하게 암호화해서 저장하는 set_password 메서드를 추가해주세요.
+- 로그인 시 암호를 검증하는 check_password 메서드를 추가해주세요.
+[3단계: Auth 블루프린트 설정 (app/__init__.py)]
+- 인증 관련 기능을 담당할 auth 블루프린트를 만들고, url_prefix=/auth로 등록해주세요.
+[4단계: 회원가입 라우트 구현 (app/routes/auth.py)]
+- /register 경로에서 GET과 POST 요청을 모두 처리해주세요.
+- 회원가입 폼에서 username, email, password, password_confirm, nickname을 받습니다.
+- [검증 로직]
+  1. 비밀번호와 비밀번호 확인이 일치하지 않으면 에러 메시지를 띄워주세요.
+  2. 이미 가입된 아이디나 이메일인지 확인해주세요 (중복 가입 방지).
+- [저장 로직]
+  검증을 통과하면 비밀번호를 해싱(Hashing)하여 저장하고,
+  회원가입 성공 즉시 login_user()를 사용해 자동으로 로그인 시켜주세요.
+
+프롬프트2 : 지금 만든 기능을 단위테스트 코드를 작성해서 확인해줘
+
+프롬프트3 : 현재 templates/에 있는 HTML 파일들과 static/에 있는 CSS, JS 파일들을 방금 만든 Flask 백엔드 기능과 연결해줘.
+
+7.2
+프롬프트1 : Flask의 auth 블루프린트에 로그인과 로그아웃 기능을 완성해주세요.
+다음 요구사항을 반영하여 라우트(Python)와 템플릿(HTML) 코드를 작성해 주세요.
+[1. 로그인 라우트 (GET/POST /auth/login)]
+- 사용자가 이메일 또는 사용자명(username) 중 편한 것을 입력하도록 합니다.
+- SQLAlchemy의 or_ 연산자를 사용하여, 입력값이 email 컬럼이나 username 컬럼 중 하나라도 일치하는 사용자를 찾으세요.
+- 비밀번호 검증: 찾은 사용자의 check_password() 메서드로 비밀번호가 맞는지 확인합니다.
+- 로그인 성공 시:
+  1. login_user() 함수를 호출합니다. 이때, 로그인 유지 체크박스 값(remember)을 반영해주세요.
+  2. next 파라미터 처리: URL 쿼리 파라미터에 next 값이 있다면 해당 주소로 이동하고, 없다면 메인 페이지(main.index)로 리다이렉트합니다.
+- 로그인 실패 시: 적절한 flash 메시지를 띄워주세요.
+
+[2. 로그아웃 라우트 (GET /auth/logout)]
+- logout_user() 함수를 호출하여 세션을 종료합니다.
+- 로그아웃 후에는 메인 페이지로 리다이렉트하며, 안내 메시지(flash)를 보여주세요.
+
+[3. 로그인 페이지 (templates/auth/login.html)]
+- 다음 필드를 포함한 폼을 만들어주세요:
+  1. 아이디/이메일 입력칸 (text)
+  2. 비밀번호 입력칸 (password)
+  3. 로그인 유지 체크박스 (checkbox, name=remember)
+- CSRF 토큰과 form.hidden_tag()를 반드시 포함해주세요.
+- 폼 태그의 action 속성에는 url_for(auth.login)을 사용하되, next 파라미터가 있다면 함께 전달되도록 처리해주세요.
+
+프롬프트2 : 지금 만든 기능을 단위테스트 코드를 작성해서 확인해줘
+
+프롬프트3 : 현재 templates/에 있는 HTML 파일들과 static/에 있는 CSS, JS 파일들을 방금 만든 Flask 백엔드 기능과 연결해줘.
+
+
+7.3
+프롬프트1 : Flask auth 블루프린트에 사용자가 자신의 프로필을 수정할 수 있는 기능을 구현해주세요.
+Python 라우트 코드와 HTML 템플릿 코드를 모두 작성해야 합니다.
+[1. 라우트 구현 (GET/POST /auth/profile)]
+- 이 페이지는 로그인이 필수입니다. @login_required 데코레이터를 사용해주세요.
+- [GET 요청 시]: profile.html을 렌더링하며, 폼에 현재 로그인한 사용자(current_user)의 닉네임과 이메일을 미리 채워주세요.
+- [POST 요청 시 처리 로직]:
+  1. 닉네임, 이메일, 현재 비밀번호, 새 비밀번호, 새 비밀번호 확인 값을 받습니다.
+  2. [이메일 중복 검사]: 변경하려는 이메일이 이미 사용 중인지 확인합니다.
+   단, 나 자신(current_user)은 제외하고 다른 사람 중에 중복이 있는지 확인해야 합니다.
+     (힌트: User.query.filter(User.email==new_email, User.id != current_user.id).first())
+  3. [비밀번호 변경 로직]:
+     - 새 비밀번호 필드에 값이 있다면, 먼저 현재 비밀번호가 맞는지 check_password()	 로 검증하세요.
+     - 검증에 실패하면 에러 메시지를 띄우고 중단합니다.
+     - 검증에 성공하고, 새 비밀번호와 확인이 일치하면 set_password()로 비밀번호를 변	 경합니다.
+  4. 모든 검증을 통과하면 변경 사항을 DB에 커밋(commit)하고, 성공 메시지(flash)를 띄       운 뒤 새로고침(redirect) 합니다.
+[2. 템플릿 구현 (templates/auth/profile.html)]
+- 닉네임, 이메일 입력칸 (value 속성에 현재 값 출력)
+- [보안 섹션]: 현재 비밀번호, 새 비밀번호, 새 비밀번호 확인 입력칸 (type="password")
+- 프로필 이미지 업로드를 위한 input (type="file")
+- 폼 태그에는 파일 전송을 위해 enctype="multipart/form-data" 속성을 꼭 넣어주세요.
+
+프롬프트2 : 지금 만든 기능을 단위테스트 코드를 작성해서 확인해줘
+
+프롬프트3 : 현재 templates/에 있는 HTML 파일들과 static/에 있는 CSS, JS 파일들을 방금 만든 Flask 백엔드 기능과 연결해줘.
+
+
+7.4
+
+프롬프트1 : Flask의 auth 블루프린트에 있는 /profile 라우트(POST 요청)에 프로필 이미지 업로드 기능을 추가해 주세요. 다음의 상세 요구사항을 모두 반영하여 코드를 작성해 주세요.
+1. HTML 폼 설정:
+업로드를 위해 <form> 태그에 enctype="multipart/form-data" 속성을 추가하고, 파일 입력 필드의 name은 profile_image로 설정해 주세요.
+2. 파일 검증 (유효성 검사):
+validate_image_file() 함수를 사용하여 파일 확장자(ALLOWED_IMAGE_EXTENSIONS)와 파일 크기(MAX_PROFILE_IMAGE_SIZE)를 검사해 주세요.
+Pillow 라이브러리의 Image.verify()를 사용해 실제 이미지 파일인지 확인하는 로직도 포함해 주세요. (5장에서 작성한 로직 활용)
+3. 파일 저장 및 관리:
+기존 파일 삭제: 사용자가 이미 프로필 이미지를 가지고 있다면, 서버의 PROFILE_IMAGE_FOLDER에서 기존 파일을 찾아 삭제(os.remove)한 후 새 파일을 저장해야 합니다.
+파일명 생성: 보안을 위해 werkzeug의 secure_filename을 사용하고, 파일명 중복을 막기 위해 현재 시간(타임스탬프)을 파일명 앞에 붙여주세요.
+4. 데이터베이스 업데이트:
+업로드가 성공하면 변경된 파일명을 User 모델의 profile_image 필드에 저장하고 커밋(db.session.commit)해 주세요.
+5. 이미지 출력:
+업로드된 이미지를 화면에 보여줄 수 있도록 User 모델에 get_profile_image_url() 메서드를 추가하거나, 템플릿에서 경로를 생성하는 방법을 알려주세요.
+
+프롬프트2 : 지금 만든 기능을 단위테스트 코드를 작성해서 확인해줘
+
+프롬프트3 : 현재 templates/에 있는 HTML 파일들과 static/에 있는 CSS, JS 파일들을 방금 만든 Flask 백엔드 기능과 연결해줘.
+
+
