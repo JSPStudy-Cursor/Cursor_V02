@@ -1,0 +1,52 @@
+[
+  {
+    "id": "TC001",
+    "title": "user authentication endpoints",
+    "description": "test user registration, login, logout, and profile management endpoints to ensure secure and correct authentication flows."
+  },
+  {
+    "id": "TC002",
+    "title": "video upload and management endpoints",
+    "description": "verify video upload with thumbnail support, video editing, and deletion endpoints for proper file validation, storage, and data consistency."
+  },
+  {
+    "id": "TC003",
+    "title": "video playback endpoints",
+    "description": "test video playback endpoint to confirm view count increments correctly and video details are accurately displayed."
+  },
+  {
+    "id": "TC004",
+    "title": "video browsing and search endpoints",
+    "description": "validate video listing, searching, sorting, and filtering endpoints to ensure relevant and accurate video results."
+  },
+  {
+    "id": "TC005",
+    "title": "comment system endpoints",
+    "description": "test comment creation, editing, deletion, nested replies, and like/dislike functionality to ensure proper comment interactions."
+  },
+  {
+    "id": "TC006",
+    "title": "video like and dislike endpoints",
+    "description": "verify like and dislike endpoints for videos to ensure counts update reliably and duplicate votes are prevented."
+  },
+  {
+    "id": "TC007",
+    "title": "subscription management endpoints",
+    "description": "test user subscription and unsubscription endpoints and subscription feed retrieval for correct reflection of user subscriptions."
+  },
+  {
+    "id": "TC008",
+    "title": "studio dashboard statistics endpoints",
+    "description": "validate studio dashboard endpoints to ensure accurate video statistics such as views and likes are displayed."
+  },
+  {
+    "id": "TC009",
+    "title": "admin dashboard management endpoints",
+    "description": "test administrator endpoints for managing users, videos, comments, and database to ensure full CRUD operations function correctly."
+  },
+  {
+    "id": "TC010",
+    "title": "restful api endpoints",
+    "description": "verify RESTful API endpoints for videos, comments, likes, and subscriptions respond with expected data formats and HTTP status codes."
+  }
+]

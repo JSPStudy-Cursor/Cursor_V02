@@ -1,0 +1,822 @@
+[
+  {
+    "id": "TC001",
+    "title": "User Registration Success",
+    "description": "Verify that a user can register successfully with valid data.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the registration page."
+      },
+      {
+        "type": "action",
+        "description": "Input valid username, email, and password."
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that the registration is successful and user is redirected or logged in."
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "User Registration Validation Errors",
+    "description": "Verify that registration fails with invalid or missing input and relevant errors are displayed.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the registration page."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to register with empty fields."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that validation errors for required fields are shown."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to register with invalid email format."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that email format error is shown."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to register with a password that does not meet criteria."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that password validation error is displayed."
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "User Login Success",
+    "description": "Verify that a user can login with correct credentials.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page."
+      },
+      {
+        "type": "action",
+        "description": "Enter valid username/email and password."
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is authenticated and redirected to main page or dashboard."
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "User Login Failure with Incorrect Credentials",
+    "description": "Verify that login fails and error messages are displayed when incorrect credentials are used.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page."
+      },
+      {
+        "type": "action",
+        "description": "Enter incorrect username/email or password."
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that login fails with appropriate error message displayed."
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "User Logout Functionality",
+    "description": "Verify that user can logout successfully and session is terminated.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login to the application."
+      },
+      {
+        "type": "action",
+        "description": "Click the logout button."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is logged out and redirected to the login or homepage."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to navigate to an authenticated page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access is denied and user is redirected to login."
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Video Upload Success",
+    "description": "Verify video upload with valid video file and thumbnail is successful.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to video upload page in Studio."
+      },
+      {
+        "type": "action",
+        "description": "Select a valid video file and a valid thumbnail image."
+      },
+      {
+        "type": "action",
+        "description": "Fill in video details: title, description, tags, category."
+      },
+      {
+        "type": "action",
+        "description": "Submit the video upload form."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the video is uploaded successfully and appears in user’s video list."
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Video Upload File Validation",
+    "description": "Verify that invalid file types or files exceeding size limits for video or thumbnail are rejected with proper messages.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Attempt to upload a non-video file as video."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify rejection with appropriate error message."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to upload a video file exceeding maximum allowed size."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify rejection with file size error message."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to upload non-image file as thumbnail."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify rejection with appropriate thumbnail error message."
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Video Edit Functionality",
+    "description": "Verify users can edit video details and changes are saved and reflected correctly.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to user’s uploaded videos in Studio dashboard."
+      },
+      {
+        "type": "action",
+        "description": "Select an existing video to edit."
+      },
+      {
+        "type": "action",
+        "description": "Modify fields like title, description, tags, category."
+      },
+      {
+        "type": "action",
+        "description": "Submit the changes."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that the changes are saved and displayed correctly in video details and listings."
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Video Delete Functionality",
+    "description": "Verify that users can delete their uploaded videos and videos are removed from listings.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to Studio dashboard."
+      },
+      {
+        "type": "action",
+        "description": "Select a video and initiate deletion."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm the deletion action."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the video is removed from user’s video list and not accessible."
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Video Playback Loads and Increments Views",
+    "description": "Verify that video playback works correctly, displays accurate details, and increments the view count once per user session.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a video playback page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the video player loads and begins playback."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that video metadata (title, description, views, likes) is displayed correctly."
+      },
+      {
+        "type": "action",
+        "description": "Reload the video page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that the views count increments correctly only once per unique view session."
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Search, Filter and Sort Videos",
+    "description": "Verify video listing supports searching by keyword, filtering by tags and category, and sorting by views or date uploaded.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the video listing or main page."
+      },
+      {
+        "type": "action",
+        "description": "Enter a search keyword and submit."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that search results contain relevant videos matching the keyword."
+      },
+      {
+        "type": "action",
+        "description": "Apply filters by tags and category."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that only videos matching selected filters are shown."
+      },
+      {
+        "type": "action",
+        "description": "Select sort option e.g. most viewed or newest."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that videos are correctly sorted according to selection."
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Comment Creation and Nested Replies",
+    "description": "Verify that users can post top-level comments and nested replies on videos.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a video playback page."
+      },
+      {
+        "type": "action",
+        "description": "Post a top-level comment."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the comment appears correctly under the video."
+      },
+      {
+        "type": "action",
+        "description": "Post a reply to the top-level comment."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the nested reply is displayed correctly indented under the parent comment."
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Comment Edit and Delete",
+    "description": "Verify users can edit or delete their own comments and changes reflect correctly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to a video with user’s comment."
+      },
+      {
+        "type": "action",
+        "description": "Edit a comment and submit."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the comment text updates accordingly."
+      },
+      {
+        "type": "action",
+        "description": "Delete the comment."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the comment is removed from the comment list."
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Comment Like and Dislike Functionality",
+    "description": "Verify users can like or dislike comments, cannot vote multiple times, and vote counts update properly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a video with comments."
+      },
+      {
+        "type": "action",
+        "description": "Click like on a comment."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the like count increments."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to like the same comment again."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that the second like is prevented and count does not change."
+      },
+      {
+        "type": "action",
+        "description": "Click dislike on a comment."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify dislike count increments and changes if user switches vote."
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Video Like and Dislike System",
+    "description": "Verify that users can like or dislike videos, cannot vote more than once, and counts update correctly.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a video playback page."
+      },
+      {
+        "type": "action",
+        "description": "Click like button on the video."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify like count increases."
+      },
+      {
+        "type": "action",
+        "description": "Try to like the video again."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the like count does not increase further."
+      },
+      {
+        "type": "action",
+        "description": "Click dislike button and verify like count decreases and dislike count increases as appropriate."
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "User Subscription and Unsubscription Flow",
+    "description": "Verify users can subscribe and unsubscribe to other users and subscription feed updates accordingly.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to another user's profile page."
+      },
+      {
+        "type": "action",
+        "description": "Click subscribe button."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify subscription count increments and subscribed status is shown."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to subscription feed page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that videos from subscribed users are displayed."
+      },
+      {
+        "type": "action",
+        "description": "Click unsubscribe button."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify subscription count decrements and user is removed from subscription feed accordingly."
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "User Profile Displays Correct Video Listings",
+    "description": "Verify that user profile pages show accurate lists of videos uploaded by the specific user.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a user’s profile page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that all videos displayed are uploaded by that user."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that video counts and other user info are displayed correctly."
+      }
+    ]
+  },
+  {
+    "id": "TC018",
+    "title": "Studio Dashboard Video Statistics Accuracy",
+    "description": "Verify that the Studio Dashboard displays accurate aggregated video statistics such as total views and likes.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to the Studio Dashboard."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that views and likes counts reflect current database state accurately for each video."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify statistics update when video is viewed or liked."
+      }
+    ]
+  },
+  {
+    "id": "TC019",
+    "title": "Admin Dashboard Full CRUD Operations",
+    "description": "Verify administrators can create, read, update, and delete users, videos, comments, and manage database entries correctly.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as admin and navigate to Admin Dashboard."
+      },
+      {
+        "type": "action",
+        "description": "Perform create, edit, and delete operations on users."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify changes are persisted and reflected in user list."
+      },
+      {
+        "type": "action",
+        "description": "Perform edit and delete operations on videos and comments."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify video and comment listings update accordingly after changes."
+      },
+      {
+        "type": "action",
+        "description": "Verify database management functionalities are accessible and functional."
+      }
+    ]
+  },
+  {
+    "id": "TC020",
+    "title": "RESTful API Endpoint Correctness",
+    "description": "Verify that RESTful API endpoints for videos, comments, likes, and subscriptions return correct data formats and expected HTTP status codes.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Send API requests to fetch video info."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify response returns expected JSON schema and HTTP 200."
+      },
+      {
+        "type": "action",
+        "description": "Send API request to create or update a comment with valid data."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify successful response and comment creation."
+      },
+      {
+        "type": "action",
+        "description": "Send API requests with invalid data or unauthorized access."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify appropriate error codes (400, 401, 403) and messages are returned."
+      }
+    ]
+  },
+  {
+    "id": "TC021",
+    "title": "File Upload Security and Validation",
+    "description": "Verify that uploaded files are validated for type and size and are sanitized to prevent security vulnerabilities.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Attempt to upload files containing scripts or malicious payloads disguised as media files."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify file upload is rejected or cleansed and no executable content is accepted."
+      },
+      {
+        "type": "action",
+        "description": "Upload valid media files and attempt to upload unsupported file types."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify appropriate validation and security checks are enforced."
+      }
+    ]
+  },
+  {
+    "id": "TC022",
+    "title": "Dark Mode UI Toggle",
+    "description": "Verify that users can toggle between dark mode and light mode UI themes and the preference is persisted during session.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to any page with toggle control."
+      },
+      {
+        "type": "action",
+        "description": "Toggle dark mode on."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI changes to dark theme (background, text colors)."
+      },
+      {
+        "type": "action",
+        "description": "Toggle dark mode off."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI reverts to light theme."
+      },
+      {
+        "type": "action",
+        "description": "Refresh the page."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the selected theme preference persists."
+      }
+    ]
+  },
+  {
+    "id": "TC023",
+    "title": "Responsive Design on Multiple Devices",
+    "description": "Verify that the application layout and components adapt correctly across mobile, tablet, and desktop screen sizes.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the application on desktop browser."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify layout and UI elements are correctly displayed."
+      },
+      {
+        "type": "action",
+        "description": "Simulate or open the app on tablet screen size."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI components adapt and remain functional and readable."
+      },
+      {
+        "type": "action",
+        "description": "Simulate or open the app on mobile screen size."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify navigation, buttons, videos, and comments display correctly and interaction is smooth."
+      }
+    ]
+  },
+  {
+    "id": "TC024",
+    "title": "Prevent Duplicate Likes on Videos",
+    "description": "Ensure that a user cannot like a video multiple times and the like count reflects unique likes only.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Like a video."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that the like count increments by one."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to like the same video again."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that the like count does not increment further and no error occurs."
+      }
+    ]
+  },
+  {
+    "id": "TC025",
+    "title": "Prevent Duplicate Likes on Comments",
+    "description": "Ensure that a user cannot like a comment multiple times and like/dislike counts reflect unique votes only.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Like a comment."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the like count increases by one."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to like the same comment again."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the like count remains unchanged."
+      },
+      {
+        "type": "action",
+        "description": "Switch vote from like to dislike."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify like count decreases by one and dislike count increases by one."
+      }
+    ]
+  },
+  {
+    "id": "TC026",
+    "title": "API Unauthorized Access Handling",
+    "description": "Verify RESTful API endpoints reject unauthorized requests with appropriate HTTP status codes.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Send API requests without authentication token to protected endpoints."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify response status codes are 401 Unauthorized."
+      },
+      {
+        "type": "action",
+        "description": "Send API requests with invalid or expired tokens."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify response status codes are 401 Unauthorized."
+      }
+    ]
+  },
+  {
+    "id": "TC027",
+    "title": "Session Management on Logout",
+    "description": "Verify user session is properly terminated after logout and cannot access authenticated endpoints or pages.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to a protected page."
+      },
+      {
+        "type": "action",
+        "description": "Logout from the application."
+      },
+      {
+        "type": "action",
+        "description": "Try to access the protected page again."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is redirected to login page and session data is cleared."
+      }
+    ]
+  },
+  {
+    "id": "TC028",
+    "title": "Input Sanitization on Comments to Prevent XSS",
+    "description": "Verify that comment inputs sanitize HTML and scripts to prevent cross-site scripting attacks.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Post a comment containing HTML and JavaScript code."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that script tags are escaped or removed and not executed."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the comment displays safely in the UI without security warnings or errors."
+      }
+    ]
+  }
+]

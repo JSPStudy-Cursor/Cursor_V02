@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}관리자 대시보드 - WeTube{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-dashboard {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .admin-nav {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .admin-nav-card {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: transform 0.3s, box-shadow 0.3s;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+    
+    .admin-nav-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .admin-nav-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+    }
+    
+    .admin-nav-card p {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+    
+    .admin-nav-card .icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card h3 {
+        font-size: 0.875rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-card .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #ff0000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container admin-dashboard">
+    <h1 class="page-title">관리자 대시보드</h1>
+    
+    <!-- 통계 카드 -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>전체 사용자</h3>
+            <div class="stat-value">{{ user_count }}</div>
+        </div>
+        <div class="stat-card">
+            <h3>전체 비디오</h3>
+            <div class="stat-value">{{ video_count }}</div>
+        </div>
+        <div class="stat-card">
+            <h3>전체 댓글</h3>
+            <div class="stat-value">{{ comment_count }}</div>
+        </div>
+    </div>
+    
+    <!-- 관리 메뉴 -->
+    <div class="admin-nav">
+        <a href="{{ url_for('admin.manage_users') }}" class="admin-nav-card">
+            <div class="icon">👥</div>
+            <h2>회원관리</h2>
+            <p>회원 검색 및 탈퇴 관리</p>
+        </a>
+        
+        <a href="{{ url_for('admin.manage_videos') }}" class="admin-nav-card">
+            <div class="icon">🎬</div>
+            <h2>비디오 관리</h2>
+            <p>비디오 검색 및 삭제 관리</p>
+        </a>
+        
+        <a href="{{ url_for('admin.manage_comments') }}" class="admin-nav-card">
+            <div class="icon">💬</div>
+            <h2>댓글 관리</h2>
+            <p>댓글 검색 및 삭제 관리</p>
+        </a>
+        
+        <a href="{{ url_for('admin.database') }}" class="admin-nav-card">
+            <div class="icon">🗄️</div>
+            <h2>데이터베이스 관리</h2>
+            <p>테이블 조회 및 SQL 쿼리 실행</p>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

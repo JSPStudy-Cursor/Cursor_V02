@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block title %}댓글 관리 - WeTube{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .search-box {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .search-box input {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+    
+    .search-box button {
+        padding: 0.75rem 1.5rem;
+    }
+    
+    .comments-table {
+        width: 100%;
+        background: var(--card-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .comments-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .comments-table th,
+    .comments-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .comments-table th {
+        background: #f5f5f5;
+        font-weight: 600;
+        color: var(--text-color);
+    }
+    
+    .comments-table tr:hover {
+        background: #f9f9f9;
+    }
+    
+    .comment-content {
+        max-width: 400px;
+        word-wrap: break-word;
+        color: var(--text-color);
+    }
+    
+    .comment-content-preview {
+        max-width: 400px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .video-title-link {
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .video-title-link:hover {
+        color: #ff0000;
+    }
+    
+    .badge-reply {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        background: #e3f2fd;
+        color: #1976d2;
+        margin-left: 0.5rem;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+    
+    .pagination a,
+    .pagination span {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        text-decoration: none;
+        color: var(--text-color);
+    }
+    
+    .pagination a:hover {
+        background: #f5f5f5;
+    }
+    
+    .pagination .current {
+        background: #ff0000;
+        color: #fff;
+        border-color: #ff0000;
+    }
+    
+    .btn-danger {
+        background: #dc3545;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.875rem;
+    }
+    
+    .btn-danger:hover {
+        background: #c82333;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-header">
+        <h1 class="page-title">댓글 관리</h1>
+        <a href="{{ url_for('admin.index') }}" class="btn btn-secondary">← 대시보드로 돌아가기</a>
+    </div>
+    
+    <!-- 검색 박스 -->
+    <form method="GET" action="{{ url_for('admin.manage_comments') }}" class="search-box">
+        <input type="text" 
+               name="q" 
+               placeholder="댓글 내용, 작성자, 비디오 제목으로 검색..." 
+               value="{{ search_query }}">
+        <button type="submit" class="btn btn-primary">검색</button>
+        {% if search_query %}
+        <a href="{{ url_for('admin.manage_comments') }}" class="btn btn-secondary">초기화</a>
+        {% endif %}
+    </form>
+    
+    <!-- 댓글 목록 -->
+    <div class="comments-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>댓글 내용</th>
+                    <th>작성자</th>
+                    <th>비디오</th>
+                    <th>좋아요</th>
+                    <th>싫어요</th>
+                    <th>작성일</th>
+                    <th>작업</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if comments %}
+                    {% for comment in comments %}
+                    <tr>
+                        <td>
+                            <div class="comment-content">
+                                {{ comment.content }}
+                            </div>
+                            {% if comment.is_reply() %}
+                            <span class="badge-reply">답글</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div>{{ comment.author.username }}</div>
+                            <div style="font-size: 0.875rem; color: #666;">{{ comment.author.email }}</div>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('main.watch', video_id=comment.video_id) }}" 
+                               target="_blank"
+                               class="video-title-link">
+                                {{ comment.video.title }}
+                            </a>
+                        </td>
+                        <td>{{ comment.likes or 0 }}</td>
+                        <td>{{ comment.dislikes or 0 }}</td>
+                        <td>{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            <form method="POST" 
+                                  action="{{ url_for('admin.delete_comment', comment_id=comment.id) }}" 
+                                  style="display: inline;"
+                                  onsubmit="return confirm('정말로 이 댓글을 삭제하시겠습니까? 답글이 있는 경우 답글도 함께 삭제됩니다. 이 작업은 되돌릴 수 없습니다.');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn-danger">삭제</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 2rem;">
+                            {% if search_query %}
+                                검색 결과가 없습니다.
+                            {% else %}
+                                등록된 댓글이 없습니다.
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- 페이지네이션 -->
+    {% if pagination.pages > 1 %}
+    <div class="pagination">
+        {% if pagination.has_prev %}
+            <a href="{{ url_for('admin.manage_comments', page=pagination.prev_num, q=search_query) }}">이전</a>
+        {% endif %}
+        
+        {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == pagination.page %}
+                    <span class="current">{{ page_num }}</span>
+                {% else %}
+                    <a href="{{ url_for('admin.manage_comments', page=page_num, q=search_query) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                <span>...</span>
+            {% endif %}
+        {% endfor %}
+        
+        {% if pagination.has_next %}
+            <a href="{{ url_for('admin.manage_comments', page=pagination.next_num, q=search_query) }}">다음</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    <!-- 통계 정보 -->
+    <div style="margin-top: 2rem; padding: 1rem; background: var(--card-bg); border-radius: 8px;">
+        <p><strong>총 댓글 수:</strong> {{ pagination.total }}개</p>
+        {% if search_query %}
+        <p><strong>검색 결과:</strong> {{ pagination.total }}개</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

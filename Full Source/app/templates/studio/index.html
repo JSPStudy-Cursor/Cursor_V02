@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}스튜디오 - WeTube{% endblock %}
+
+{% block content %}
+<div class="container studio-container">
+    <div class="studio-header">
+        <h1 class="page-title">내 동영상</h1>
+        <a href="{{ url_for('studio.upload') }}" class="btn btn-primary">동영상 업로드</a>
+    </div>
+    
+    <!-- 통계 섹션 -->
+    {% if stats %}
+    <div class="studio-stats">
+        <h2 class="stats-title">통계</h2>
+        
+        <!-- 전체 통계 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">총 동영상</div>
+                <div class="stat-value">{{ stats.total.videos }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">총 조회수</div>
+                <div class="stat-value">{{ "{:,}".format(stats.total.views) }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">총 좋아요</div>
+                <div class="stat-value">{{ "{:,}".format(stats.total.likes) }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">총 댓글</div>
+                <div class="stat-value">{{ "{:,}".format(stats.total.comments) }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">평균 조회수</div>
+                <div class="stat-value">{{ stats.total.avg_views }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">평균 좋아요</div>
+                <div class="stat-value">{{ stats.total.avg_likes }}</div>
+            </div>
+        </div>
+        
+        <!-- 최근 통계 -->
+        <div class="stats-recent">
+            <h3 class="stats-subtitle">최근 활동</h3>
+            <div class="stats-recent-grid">
+                <div class="recent-stat">
+                    <div class="recent-stat-period">최근 7일</div>
+                    <div class="recent-stat-details">
+                        <span>동영상: {{ stats.recent_7d.videos }}개</span>
+                        <span>조회수: {{ "{:,}".format(stats.recent_7d.views) }}회</span>
+                        <span>좋아요: {{ "{:,}".format(stats.recent_7d.likes) }}개</span>
+                    </div>
+                </div>
+                <div class="recent-stat">
+                    <div class="recent-stat-period">최근 30일</div>
+                    <div class="recent-stat-details">
+                        <span>동영상: {{ stats.recent_30d.videos }}개</span>
+                        <span>조회수: {{ "{:,}".format(stats.recent_30d.views) }}회</span>
+                        <span>좋아요: {{ "{:,}".format(stats.recent_30d.likes) }}개</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 인기 동영상 -->
+        {% if popular_videos %}
+        <div class="stats-popular">
+            <h3 class="stats-subtitle">인기 동영상 TOP 5</h3>
+            <div class="popular-videos-list">
+                {% for video in popular_videos %}
+                <div class="popular-video-item">
+                    <div class="popular-video-thumbnail">
+                        {% if video.thumbnail_path %}
+                            <img src="{{ video.get_thumbnail_url() }}" 
+                                 alt="{{ video.title }}">
+                        {% else %}
+                            <div class="thumbnail-placeholder-small">썸네일 없음</div>
+                        {% endif %}
+                    </div>
+                    <div class="popular-video-info">
+                        <a href="{{ url_for('main.watch', video_id=video.id) }}" class="popular-video-title">
+                            {{ video.title }}
+                        </a>
+                        <div class="popular-video-meta">
+                            <span>조회수 {{ "{:,}".format(video.views) }}회</span>
+                            <span>좋아요 {{ "{:,}".format(video.likes) }}개</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    <!-- 동영상 목록 -->
+    <div class="studio-videos-section">
+        <h2 class="section-title">내 동영상 목록</h2>
+        {% if videos %}
+    <div class="video-list">
+        {% for video in videos %}
+        <div class="video-item">
+            <div class="video-item-thumbnail">
+                {% if video.thumbnail_path %}
+                    <img src="{{ url_for('uploads.serve_thumbnail', filename=video.thumbnail_path) }}" 
+                         alt="{{ video.title }}">
+                {% else %}
+                    <div class="thumbnail-placeholder">썸네일 없음</div>
+                {% endif %}
+            </div>
+            <div class="video-item-info">
+                <h3 class="video-item-title">{{ video.title }}</h3>
+                <p class="video-item-description">{{ video.description[:100] if video.description else '설명 없음' }}</p>
+                <div class="video-item-meta">
+                    <span>조회수 {{ video.views }}회</span>
+                    <span>{{ video.created_at.strftime('%Y.%m.%d') }}</span>
+                </div>
+            </div>
+            <div class="video-item-actions">
+                <a href="{{ url_for('main.watch', video_id=video.id) }}" class="btn btn-sm">보기</a>
+                <a href="{{ url_for('studio.edit', video_id=video.id) }}" class="btn btn-sm btn-secondary">수정</a>
+                <form method="POST" action="{{ url_for('studio.delete', video_id=video.id) }}" 
+                      style="display: inline;" 
+                      onsubmit="return confirm('정말로 이 동영상을 삭제하시겠습니까?\\n삭제된 동영상은 복구할 수 없습니다.');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-sm btn-danger">삭제</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>아직 업로드한 동영상이 없습니다.</p>
+        <a href="{{ url_for('studio.upload') }}" class="btn btn-primary">첫 동영상 업로드하기</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,17 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:5000",
+  "loginUser": "admin",
+  "loginPassword": "1234qwer!!",
+  "executionArgs": {
+    "projectName": "Wetube",
+    "projectPath": "E:\\0-Wetube",
+    "testIds": [],
+    "additionalInstruction": "위튜브 프로젝트의 주요 기능들을 테스트해주세요. 회원가입, 로그인, 비디오 업로드, 비디오 시청, 댓글 작성, 좋아요, 구독 등의 기능을 포함하여 테스트해주세요. 서버는 http://localhost:5000에서 실행 중입니다.",
+    "envs": {
+      "API_KEY": "sk-user-hSnFyICp2VnnmA7FceAfyq1sU2LP-GG7kvg8AmapDqJc9DHwlRZLFG0KejWqyrzGiIE52hFOzzTruC5HnWSYS_r2cIfgvJspmbI5AR286ZippbGbWOcxsMwN7tRSYP6z8-A"
+    }
+  }
+}

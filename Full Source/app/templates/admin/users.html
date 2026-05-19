@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}회원관리 - WeTube{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .search-box {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .search-box input {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+    
+    .search-box button {
+        padding: 0.75rem 1.5rem;
+    }
+    
+    .users-table {
+        width: 100%;
+        background: var(--card-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .users-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .users-table th,
+    .users-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .users-table th {
+        background: #f5f5f5;
+        font-weight: 600;
+        color: var(--text-color);
+    }
+    
+    .users-table tr:hover {
+        background: #f9f9f9;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    
+    .user-avatar-placeholder {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ff0000;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    .badge-admin {
+        background: #ff0000;
+        color: #fff;
+    }
+    
+    .badge-user {
+        background: #e0e0e0;
+        color: #333;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+    
+    .pagination a,
+    .pagination span {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        text-decoration: none;
+        color: var(--text-color);
+    }
+    
+    .pagination a:hover {
+        background: #f5f5f5;
+    }
+    
+    .pagination .current {
+        background: #ff0000;
+        color: #fff;
+        border-color: #ff0000;
+    }
+    
+    .btn-danger {
+        background: #dc3545;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.875rem;
+    }
+    
+    .btn-danger:hover {
+        background: #c82333;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-header">
+        <h1 class="page-title">회원관리</h1>
+        <a href="{{ url_for('admin.index') }}" class="btn btn-secondary">← 대시보드로 돌아가기</a>
+    </div>
+    
+    <!-- 검색 박스 -->
+    <form method="GET" action="{{ url_for('admin.manage_users') }}" class="search-box">
+        <input type="text" 
+               name="q" 
+               placeholder="사용자명, 이메일, 닉네임으로 검색..." 
+               value="{{ search_query }}">
+        <button type="submit" class="btn btn-primary">검색</button>
+        {% if search_query %}
+        <a href="{{ url_for('admin.manage_users') }}" class="btn btn-secondary">초기화</a>
+        {% endif %}
+    </form>
+    
+    <!-- 회원 목록 -->
+    <div class="users-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>프로필</th>
+                    <th>사용자명</th>
+                    <th>이메일</th>
+                    <th>닉네임</th>
+                    <th>권한</th>
+                    <th>가입일</th>
+                    <th>작업</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if users %}
+                    {% for user in users %}
+                    <tr>
+                        <td>
+                            {% if user.profile_image %}
+                                <img src="{{ user.get_profile_image_url() }}" 
+                                     alt="{{ user.nickname or user.username }}" 
+                                     class="user-avatar">
+                            {% else %}
+                                <div class="user-avatar-placeholder">
+                                    {{ (user.nickname or user.username)[0] }}
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.nickname or '-' }}</td>
+                        <td>
+                            {% if user.is_admin %}
+                                <span class="badge badge-admin">관리자</span>
+                            {% else %}
+                                <span class="badge badge-user">일반</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if not user.is_admin and user.id != current_user.id %}
+                            <form method="POST" 
+                                  action="{{ url_for('admin.delete_user', user_id=user.id) }}" 
+                                  style="display: inline;"
+                                  onsubmit="return confirm('정말로 이 회원을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn-danger">탈퇴</button>
+                            </form>
+                            {% else %}
+                            <span style="color: #999;">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 2rem;">
+                            {% if search_query %}
+                                검색 결과가 없습니다.
+                            {% else %}
+                                등록된 회원이 없습니다.
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- 페이지네이션 -->
+    {% if pagination.pages > 1 %}
+    <div class="pagination">
+        {% if pagination.has_prev %}
+            <a href="{{ url_for('admin.manage_users', page=pagination.prev_num, q=search_query) }}">이전</a>
+        {% endif %}
+        
+        {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == pagination.page %}
+                    <span class="current">{{ page_num }}</span>
+                {% else %}
+                    <a href="{{ url_for('admin.manage_users', page=page_num, q=search_query) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                <span>...</span>
+            {% endif %}
+        {% endfor %}
+        
+        {% if pagination.has_next %}
+            <a href="{{ url_for('admin.manage_users', page=pagination.next_num, q=search_query) }}">다음</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    <!-- 통계 정보 -->
+    <div style="margin-top: 2rem; padding: 1rem; background: var(--card-bg); border-radius: 8px;">
+        <p><strong>총 회원 수:</strong> {{ pagination.total }}명</p>
+        {% if search_query %}
+        <p><strong>검색 결과:</strong> {{ pagination.total }}명</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

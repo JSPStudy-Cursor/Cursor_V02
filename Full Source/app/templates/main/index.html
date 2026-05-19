@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}홈 - WeTube{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">{{ sort_label }}</h1>
+        
+        <!-- 카테고리 필터 -->
+        <div class="category-filter">
+            <a href="{{ url_for('main.index', sort=sort_by) }}" 
+               class="category-tab {% if not current_category %}active{% endif %}">
+                전체
+            </a>
+            {% for key, value in config.VIDEO_CATEGORIES.items() %}
+            <a href="{{ url_for('main.index', sort=sort_by, category=key) }}" 
+               class="category-tab {% if current_category == key %}active{% endif %}">
+                {{ value }}
+            </a>
+            {% endfor %}
+        </div>
+        
+        <!-- 정렬 옵션 탭 -->
+        <div class="sort-tabs">
+            <a href="{{ url_for('main.index', sort='latest', category=current_category) }}" 
+               class="sort-tab {% if sort_by == 'latest' %}active{% endif %}">
+                최신순
+            </a>
+            <a href="{{ url_for('main.index', sort='popular', category=current_category) }}" 
+               class="sort-tab {% if sort_by == 'popular' %}active{% endif %}">
+                인기순
+            </a>
+            <a href="{{ url_for('main.index', sort='views', category=current_category) }}" 
+               class="sort-tab {% if sort_by == 'views' %}active{% endif %}">
+                조회수순
+            </a>
+        </div>
+    </div>
+    
+    <!-- 인기 태그 -->
+    {% if popular_tags %}
+    <div class="popular-tags-section">
+        <h2 class="section-title">인기 태그</h2>
+        <div class="popular-tags">
+            {% for tag in popular_tags %}
+            <a href="{{ url_for('main.tag_videos', tag_name=tag.name) }}" class="tag-link">
+                #{{ tag.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="video-grid">
+        {% if videos.items %}
+            {% for video in videos.items %}
+            <div class="video-card">
+                <a href="{{ url_for('main.watch', video_id=video.id) }}" class="video-link">
+                    <div class="video-thumbnail">
+                        {% if video.thumbnail_path %}
+                            <img src="{{ video.get_thumbnail_url() }}" 
+                                 alt="{{ video.title }}" 
+                                 onerror="this.style.backgroundColor='#ddd'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='썸네일 없음';">
+                        {% else %}
+                            <div style="width:100%; height:100%; background:#ddd; display:flex; align-items:center; justify-content:center; color:#999;">썸네일 없음</div>
+                        {% endif %}
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">{{ video.title }}</h3>
+                        <p class="video-author">
+                            <a href="{{ url_for('main.user_profile', username=video.author.username) }}" 
+                               class="author-link">{{ video.author.nickname or video.author.username }}</a>
+                        </p>
+                        <div class="video-meta">
+                            <span class="video-views">조회수 {{ video.views }}회</span>
+                            <span class="video-date">{{ video.created_at.strftime('%Y.%m.%d') }}</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>아직 업로드된 동영상이 없습니다.</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- 페이지네이션 -->
+    {% if videos.pages > 1 %}
+    <div class="pagination">
+        {% if videos.has_prev %}
+            <a href="{{ url_for('main.index', page=videos.prev_num, sort=sort_by, category=current_category) }}" class="page-link">이전</a>
+        {% endif %}
+        
+        {% for page_num in videos.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == videos.page %}
+                    <span class="page-link active">{{ page_num }}</span>
+                {% else %}
+                    <a href="{{ url_for('main.index', page=page_num, sort=sort_by, category=current_category) }}" class="page-link">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                <span class="page-link">...</span>
+            {% endif %}
+        {% endfor %}
+        
+        {% if videos.has_next %}
+            <a href="{{ url_for('main.index', page=videos.next_num, sort=sort_by, category=current_category) }}" class="page-link">다음</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}동영상 수정 - WeTube{% endblock %}
+
+{% block content %}
+<div class="container upload-container">
+    <h1 class="page-title">동영상 수정</h1>
+    
+    <form method="POST" enctype="multipart/form-data" class="upload-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="form-group">
+            <label for="title">제목 *</label>
+            <input type="text" id="title" name="title" class="form-control" required 
+                   value="{{ video.title }}" placeholder="동영상 제목을 입력하세요">
+        </div>
+        
+        <div class="form-group">
+            <label for="description">설명</label>
+            <textarea id="description" name="description" class="form-control" rows="5" 
+                      placeholder="동영상에 대한 설명을 입력하세요">{{ video.description or '' }}</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="category">카테고리</label>
+            <select id="category" name="category" class="form-control">
+                <option value="">카테고리 선택 (선택사항)</option>
+                {% for key, value in config.VIDEO_CATEGORIES.items() %}
+                <option value="{{ key }}" {% if video.category == key %}selected{% endif %}>{{ value }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="tags">태그</label>
+            <input type="text" id="tags" name="tags" class="form-control" 
+                   value="{% if video.tags %}{{ video.tags.all() | map(attribute='name') | join(', ') }}{% endif %}"
+                   placeholder="태그를 쉼표로 구분하여 입력하세요 (예: 태그1, 태그2, 태그3)">
+            <small class="form-text">태그는 쉼표로 구분하여 입력하세요. 최대 50자까지 가능합니다.</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="video">동영상 파일 (변경 시에만 선택)</label>
+            <input type="file" id="video" name="video" class="form-control" 
+                   accept="video/*">
+            <small class="form-text">현재 파일: {{ video.video_path }}</small>
+            <small class="form-text">지원 형식: MP4, AVI, MOV, MKV, WEBM (최대 100MB)</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="thumbnail">썸네일 이미지 (변경 시에만 선택)</label>
+            <input type="file" id="thumbnail" name="thumbnail" class="form-control" 
+                   accept="image/*">
+            {% if video.thumbnail_path %}
+            <div style="margin-top: 0.5rem;">
+                <img src="{{ video.get_thumbnail_url() }}" 
+                     alt="현재 썸네일" style="max-width: 200px; border-radius: 4px;">
+                <div style="margin-top: 0.5rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" name="delete_thumbnail" id="delete_thumbnail">
+                        <span>현재 썸네일 삭제</span>
+                    </label>
+                </div>
+            </div>
+            {% else %}
+            <small class="form-text">현재 썸네일이 없습니다.</small>
+            {% endif %}
+            <small class="form-text">지원 형식: JPG, PNG, GIF, WEBP</small>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">수정 완료</button>
+            <a href="{{ url_for('studio.index') }}" class="btn btn-secondary">취소</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}{{ profile_user.nickname or profile_user.username }} - WeTube{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- 사용자 프로필 헤더 -->
+    <div class="profile-header">
+        <div class="profile-avatar-section">
+            {% if profile_user.profile_image %}
+                <img src="{{ profile_user.get_profile_image_url() }}" 
+                     alt="{{ profile_user.nickname or profile_user.username }}" 
+                     class="profile-avatar">
+            {% else %}
+                <div class="profile-avatar-placeholder">
+                    {{ (profile_user.nickname or profile_user.username)[0] }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="profile-info">
+            <h1 class="profile-name">{{ profile_user.nickname or profile_user.username }}</h1>
+            <p class="profile-username">@{{ profile_user.username }}</p>
+            <p class="profile-joined">가입일: {{ profile_user.created_at.strftime('%Y년 %m월 %d일') }}</p>
+            {% if current_user.is_authenticated and current_user.id != profile_user.id %}
+            <div class="profile-actions">
+                <button id="subscribe-btn" 
+                        class="subscribe-btn {% if is_subscribed %}subscribed{% endif %}"
+                        data-user-id="{{ profile_user.id }}"
+                        onclick="toggleSubscribe({{ profile_user.id }})">
+                    <span id="subscribe-text">{% if is_subscribed %}구독 취소{% else %}구독{% endif %}</span>
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        <div class="profile-stats">
+            <div class="stat-item">
+                <div class="stat-value">{{ video_count }}</div>
+                <div class="stat-label">동영상</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ "{:,}".format(total_views) }}</div>
+                <div class="stat-label">총 조회수</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ "{:,}".format(total_likes) }}</div>
+                <div class="stat-label">총 좋아요</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="subscriber-count">{{ "{:,}".format(subscriber_count) }}</div>
+                <div class="stat-label">구독자</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 사용자 비디오 목록 -->
+    <div class="profile-videos-section">
+        <h2 class="section-title">{{ profile_user.nickname or profile_user.username }}의 동영상</h2>
+        
+        {% if videos.items %}
+            <div class="video-grid">
+                {% for video in videos.items %}
+                <div class="video-card">
+                    <a href="{{ url_for('main.watch', video_id=video.id) }}" class="video-link">
+                        <div class="video-thumbnail">
+                            {% if video.thumbnail_path %}
+                                <img src="{{ video.get_thumbnail_url() }}" 
+                                     alt="{{ video.title }}" 
+                                     onerror="this.style.backgroundColor='#ddd'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='썸네일 없음';">
+                            {% else %}
+                                <div style="width:100%; height:100%; background:#ddd; display:flex; align-items:center; justify-content:center; color:#999;">썸네일 없음</div>
+                            {% endif %}
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">{{ video.title }}</h3>
+                            <div class="video-meta">
+                                <span class="video-views">조회수 {{ video.views }}회</span>
+                                <span class="video-likes">좋아요 {{ video.likes }}개</span>
+                                <span class="video-date">{{ video.created_at.strftime('%Y.%m.%d') }}</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- 페이지네이션 -->
+            {% if videos.pages > 1 %}
+            <div class="pagination">
+                {% if videos.has_prev %}
+                    <a href="{{ url_for('main.user_profile', username=profile_user.username, page=videos.prev_num) }}" class="page-link">이전</a>
+                {% endif %}
+                
+                {% for page_num in videos.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        {% if page_num == videos.page %}
+                            <span class="page-link active">{{ page_num }}</span>
+                        {% else %}
+                            <a href="{{ url_for('main.user_profile', username=profile_user.username, page=page_num) }}" class="page-link">{{ page_num }}</a>
+                        {% endif %}
+                    {% else %}
+                        <span class="page-link">...</span>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if videos.has_next %}
+                    <a href="{{ url_for('main.user_profile', username=profile_user.username, page=videos.next_num) }}" class="page-link">다음</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="empty-state">
+                <p>아직 업로드한 동영상이 없습니다.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

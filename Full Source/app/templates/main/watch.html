@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+
+{% block title %}{{ video.title }} - WeTube{% endblock %}
+
+{% block extra_js %}
+<script>
+    // AJAX 댓글 수정/대댓글 UI에서 본인 여부 판별용
+    {% if current_user.is_authenticated %}
+    window.currentUserId = {{ current_user.id }};
+    {% else %}
+    window.currentUserId = null;
+    {% endif %}
+    window.currentVideoId = {{ video.id }};
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container watch-container">
+    <div class="watch-main">
+        <!-- 비디오 플레이어 -->
+        <div class="video-player">
+            <video controls width="100%">
+                <source src="{{ video.get_video_url() }}" type="video/mp4">
+                브라우저가 비디오 태그를 지원하지 않습니다.
+            </video>
+        </div>
+        
+        <!-- 비디오 정보 -->
+        <div class="video-details">
+            <h1 class="video-title">{{ video.title }}</h1>
+            <div class="video-meta-info">
+                {% if video.category %}
+                <a href="{{ url_for('main.index', category=video.category) }}" class="video-category">
+                    {{ config.VIDEO_CATEGORIES.get(video.category, video.category) }}
+                </a>
+                {% endif %}
+                <span class="video-views">조회수 {{ video.views }}회</span>
+                <span class="video-date">{{ video.created_at.strftime('%Y년 %m월 %d일') }}</span>
+            </div>
+            
+            <!-- 태그 표시 -->
+            {% if video.tags.count() > 0 %}
+            <div class="video-tags">
+                <span class="tags-label">태그:</span>
+                {% for tag in video.tags %}
+                <a href="{{ url_for('main.tag_videos', tag_name=tag.name) }}" class="tag-link">#{{ tag.name }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <!-- 좋아요 버튼 -->
+            <div class="video-actions">
+                {% if current_user.is_authenticated %}
+                <button id="like-btn" 
+                        class="like-btn {% if is_liked %}liked{% endif %}"
+                        data-video-id="{{ video.id }}"
+                        onclick="toggleLike({{ video.id }})">
+                    <span class="like-icon">❤️</span>
+                    <span class="like-text">좋아요</span>
+                    <span class="like-count" id="like-count">{{ video.likes }}</span>
+                </button>
+                {% else %}
+                <div class="like-btn disabled" title="로그인이 필요합니다">
+                    <span class="like-icon">❤️</span>
+                    <span class="like-text">좋아요</span>
+                    <span class="like-count">{{ video.likes }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="video-author-section">
+                <div class="author-info">
+                    <div class="author-avatar">
+                        {% if video.author.profile_image %}
+                            <img src="{{ video.author.get_profile_image_url() }}" alt="프로필">
+                        {% else %}
+                            <div class="avatar-placeholder">{{ (video.author.nickname or video.author.username)[0] }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="author-details">
+                        <p class="author-name">
+                            <a href="{{ url_for('main.user_profile', username=video.author.username) }}" 
+                               class="author-link">{{ video.author.nickname or video.author.username }}</a>
+                        </p>
+                    </div>
+                </div>
+                {% if current_user.is_authenticated and current_user.id != video.author.id %}
+                <div class="author-actions">
+                    <button id="subscribe-btn" 
+                            class="subscribe-btn {% if is_subscribed %}subscribed{% endif %}"
+                            data-user-id="{{ video.author.id }}"
+                            onclick="toggleSubscribe({{ video.author.id }})">
+                        <span id="subscribe-text">{% if is_subscribed %}구독 취소{% else %}구독{% endif %}</span>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% if video.description %}
+            <div class="video-description">
+                <h3>설명</h3>
+                <p>{{ video.description }}</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- 댓글 섹션 -->
+        <div class="comments-section" data-video-id="{{ video.id }}">
+            <h3>댓글 <span id="comment-count">{{ comments|length }}</span>개</h3>
+            
+            <!-- 댓글 작성 폼 (로그인한 사용자만) -->
+            {% if current_user.is_authenticated %}
+            <form method="POST" action="{{ url_for('comments.create_comment', video_id=video.id) }}" class="comment-form" id="comment-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <textarea name="content" id="comment-content" placeholder="댓글을 입력하세요..." required></textarea>
+                <div class="comment-form-actions">
+                    <button type="submit" class="btn btn-primary btn-sm" id="comment-submit-btn">댓글 작성</button>
+                </div>
+            </form>
+            <script>
+            // 폼 제출 시 버튼 비활성화
+            document.getElementById('comment-form').addEventListener('submit', function(e) {
+                const submitBtn = document.getElementById('comment-submit-btn');
+                const content = document.getElementById('comment-content').value.trim();
+                
+                if (!content) {
+                    e.preventDefault();
+                    alert('댓글 내용을 입력해주세요.');
+                    return false;
+                }
+                
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = '작성 중...';
+                }
+            });
+            </script>
+            {% else %}
+            <div class="comment-form">
+                <p style="color: #999; margin-bottom: 1rem;">댓글을 작성하려면 <a href="{{ url_for('auth.login') }}">로그인</a>이 필요합니다.</p>
+            </div>
+            {% endif %}
+            
+            <!-- 댓글 목록 -->
+            <div id="comments-list" class="comments-list">
+                {% if comments %}
+                    {% for comment in comments %}
+                    <div class="comment-item" data-comment-id="{{ comment.id }}">
+                        <div class="comment-avatar">
+                            {% if comment.author.profile_image %}
+                                <img src="{{ comment.author.get_profile_image_url() }}" alt="프로필">
+                            {% else %}
+                                <div class="comment-avatar-placeholder">{{ (comment.author.nickname or comment.author.username)[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <span class="comment-author">{{ comment.author.nickname or comment.author.username }}</span>
+                                <span class="comment-date">{{ comment.created_at.strftime('%Y년 %m월 %d일 %H:%M') }}</span>
+                                {% if comment.updated_at != comment.created_at %}
+                                <span class="comment-date">(수정됨)</span>
+                                {% endif %}
+                            </div>
+                            <div class="comment-text">{{ comment.content }}</div>
+                            <div class="comment-footer">
+                                {% if current_user.is_authenticated %}
+                                <button class="comment-reply-btn" onclick="toggleReplyForm({{ comment.id }})">답글</button>
+                                {% endif %}
+                                {% if current_user.is_authenticated and current_user.id == comment.user_id %}
+                                <button class="comment-action-btn edit" 
+                                        data-comment-id="{{ comment.id }}" 
+                                        data-comment-content="{{ comment.content|e }}"
+                                        onclick="editCommentFromButton(this)">수정</button>
+                                <button class="comment-action-btn delete" 
+                                        onclick="deleteComment({{ comment.id }})">삭제</button>
+                                {% endif %}
+                            </div>
+                            <!-- 댓글 수정 폼 (숨김) -->
+                            {% if current_user.is_authenticated and current_user.id == comment.user_id %}
+                            <div id="edit-form-{{ comment.id }}" class="comment-edit-form" style="display: none;">
+                                <textarea id="edit-content-{{ comment.id }}" required>{{ comment.content }}</textarea>
+                                <div class="comment-edit-actions">
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="updateComment({{ comment.id }})">저장</button>
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="cancelEdit({{ comment.id }})">취소</button>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <!-- 대댓글 작성 폼 (숨김) -->
+                            {% if current_user.is_authenticated %}
+                            <div id="reply-form-{{ comment.id }}" class="comment-reply-form" style="display: none;">
+                                <textarea id="reply-content-{{ comment.id }}" placeholder="답글을 입력하세요..." required></textarea>
+                                <div class="comment-reply-actions">
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="createReply({{ comment.id }})">답글 작성</button>
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="cancelReply({{ comment.id }})">취소</button>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <!-- 대댓글 목록 -->
+                            {% if comment._replies %}
+                            <div class="replies-list" id="replies-{{ comment.id }}">
+                                {% for reply in comment._replies %}
+                                <div class="reply-item" data-comment-id="{{ reply.id }}">
+                                    <div class="reply-avatar">
+                                        {% if reply.author.profile_image %}
+                                            <img src="{{ reply.author.get_profile_image_url() }}" alt="프로필">
+                                        {% else %}
+                                            <div class="comment-avatar-placeholder">{{ (reply.author.nickname or reply.author.username)[0] }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="reply-content">
+                                        <div class="reply-header">
+                                            <span class="reply-author">{{ reply.author.nickname or reply.author.username }}</span>
+                                            <span class="reply-date">{{ reply.created_at.strftime('%Y년 %m월 %d일 %H:%M') }}</span>
+                                            {% if reply.updated_at != reply.created_at %}
+                                            <span class="reply-date">(수정됨)</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="reply-text">{{ reply.content }}</div>
+                                        <div class="reply-footer">
+                                            {% if current_user.is_authenticated and current_user.id == reply.user_id %}
+                                            <div class="reply-actions">
+                                                <button class="comment-action-btn edit" 
+                                                        data-comment-id="{{ reply.id }}" 
+                                                        data-comment-content="{{ reply.content|e }}"
+                                                        onclick="editCommentFromButton(this)">수정</button>
+                                                <button class="comment-action-btn delete" 
+                                                        onclick="deleteComment({{ reply.id }})">삭제</button>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <!-- 대댓글 수정 폼 (숨김) -->
+                                        {% if current_user.is_authenticated and current_user.id == reply.user_id %}
+                                        <div id="edit-form-{{ reply.id }}" class="comment-edit-form" style="display: none;">
+                                            <textarea id="edit-content-{{ reply.id }}" required>{{ reply.content }}</textarea>
+                                            <div class="comment-edit-actions">
+                                                <button type="button" class="btn btn-primary btn-sm" onclick="updateComment({{ reply.id }})">저장</button>
+                                                <button type="button" class="btn btn-secondary btn-sm" onclick="cancelEdit({{ reply.id }})">취소</button>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="comments-empty">
+                        <p>아직 댓글이 없습니다. 첫 번째 댓글을 작성해보세요!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <script>
+        // 페이지 로드 시 댓글 목록 API로 로드 (선택사항 - SSR과 병행 가능)
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const videoId = document.querySelector('[data-video-id]')?.getAttribute('data-video-id');
+        //     if (videoId) {
+        //         loadComments(videoId);
+        //     }
+        // });
+        </script>
+    </div>
+    
+    <!-- 관련 동영상 섹션 -->
+    {% if related_videos %}
+    <div class="watch-sidebar">
+        <h2 class="sidebar-title">관련 동영상</h2>
+        <div class="related-videos-list">
+            {% for related_video in related_videos %}
+            <div class="related-video-item">
+                <a href="{{ url_for('main.watch', video_id=related_video.id) }}" class="related-video-link">
+                    <div class="related-video-thumbnail">
+                        {% if related_video.thumbnail_path %}
+                            <img src="{{ related_video.get_thumbnail_url() }}" 
+                                 alt="{{ related_video.title }}" 
+                                 onerror="this.style.backgroundColor='#ddd'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.innerHTML='썸네일 없음';">
+                        {% else %}
+                            <div style="width:100%; height:100%; background:#ddd; display:flex; align-items:center; justify-content:center; color:#999; font-size:0.8rem;">썸네일 없음</div>
+                        {% endif %}
+                    </div>
+                    <div class="related-video-info">
+                        <h4 class="related-video-title">{{ related_video.title }}</h4>
+                        <p class="related-video-author">{{ related_video.author.nickname or related_video.author.username }}</p>
+                        <div class="related-video-meta">
+                            <span class="related-video-views">조회수 {{ related_video.views }}회</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

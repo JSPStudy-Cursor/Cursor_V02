@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}비디오 관리 - WeTube{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .search-box {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .search-box input {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+    
+    .search-box button {
+        padding: 0.75rem 1.5rem;
+    }
+    
+    .videos-table {
+        width: 100%;
+        background: var(--card-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .videos-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .videos-table th,
+    .videos-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .videos-table th {
+        background: #f5f5f5;
+        font-weight: 600;
+        color: var(--text-color);
+    }
+    
+    .videos-table tr:hover {
+        background: #f9f9f9;
+    }
+    
+    .video-thumbnail-small {
+        width: 120px;
+        height: 68px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+    
+    .video-title {
+        font-weight: 600;
+        color: var(--text-color);
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .video-title a {
+        color: var(--text-color);
+        text-decoration: none;
+    }
+    
+    .video-title a:hover {
+        color: #ff0000;
+    }
+    
+    .video-stats {
+        color: #666;
+        font-size: 0.875rem;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+    
+    .pagination a,
+    .pagination span {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        text-decoration: none;
+        color: var(--text-color);
+    }
+    
+    .pagination a:hover {
+        background: #f5f5f5;
+    }
+    
+    .pagination .current {
+        background: #ff0000;
+        color: #fff;
+        border-color: #ff0000;
+    }
+    
+    .btn-danger {
+        background: #dc3545;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.875rem;
+    }
+    
+    .btn-danger:hover {
+        background: #c82333;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-header">
+        <h1 class="page-title">비디오 관리</h1>
+        <a href="{{ url_for('admin.index') }}" class="btn btn-secondary">← 대시보드로 돌아가기</a>
+    </div>
+    
+    <!-- 검색 박스 -->
+    <form method="GET" action="{{ url_for('admin.manage_videos') }}" class="search-box">
+        <input type="text" 
+               name="q" 
+               placeholder="제목, 설명, 작성자로 검색..." 
+               value="{{ search_query }}">
+        <button type="submit" class="btn btn-primary">검색</button>
+        {% if search_query %}
+        <a href="{{ url_for('admin.manage_videos') }}" class="btn btn-secondary">초기화</a>
+        {% endif %}
+    </form>
+    
+    <!-- 비디오 목록 -->
+    <div class="videos-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>썸네일</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>조회수</th>
+                    <th>좋아요</th>
+                    <th>업로드일</th>
+                    <th>작업</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if videos %}
+                    {% for video in videos %}
+                    <tr>
+                        <td>
+                            {% if video.thumbnail_path %}
+                                <img src="{{ video.get_thumbnail_url() }}" 
+                                     alt="{{ video.title }}" 
+                                     class="video-thumbnail-small">
+                            {% else %}
+                                <div style="width: 120px; height: 68px; background: #ddd; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999;">
+                                    썸네일 없음
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="video-title">
+                                <a href="{{ url_for('main.watch', video_id=video.id) }}" target="_blank">
+                                    {{ video.title }}
+                                </a>
+                            </div>
+                            {% if video.description %}
+                            <div style="font-size: 0.875rem; color: #666; margin-top: 0.25rem; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ video.description }}
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div>{{ video.author.username }}</div>
+                            <div style="font-size: 0.875rem; color: #666;">{{ video.author.email }}</div>
+                        </td>
+                        <td class="video-stats">{{ "{:,}".format(video.views) }}</td>
+                        <td class="video-stats">{{ "{:,}".format(video.likes) }}</td>
+                        <td class="video-stats">{{ video.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <form method="POST" 
+                                  action="{{ url_for('admin.delete_video', video_id=video.id) }}" 
+                                  style="display: inline;"
+                                  onsubmit="return confirm('정말로 이 비디오를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn-danger">삭제</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 2rem;">
+                            {% if search_query %}
+                                검색 결과가 없습니다.
+                            {% else %}
+                                등록된 비디오가 없습니다.
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- 페이지네이션 -->
+    {% if pagination.pages > 1 %}
+    <div class="pagination">
+        {% if pagination.has_prev %}
+            <a href="{{ url_for('admin.manage_videos', page=pagination.prev_num, q=search_query) }}">이전</a>
+        {% endif %}
+        
+        {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if page_num == pagination.page %}
+                    <span class="current">{{ page_num }}</span>
+                {% else %}
+                    <a href="{{ url_for('admin.manage_videos', page=page_num, q=search_query) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                <span>...</span>
+            {% endif %}
+        {% endfor %}
+        
+        {% if pagination.has_next %}
+            <a href="{{ url_for('admin.manage_videos', page=pagination.next_num, q=search_query) }}">다음</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    <!-- 통계 정보 -->
+    <div style="margin-top: 2rem; padding: 1rem; background: var(--card-bg); border-radius: 8px;">
+        <p><strong>총 비디오 수:</strong> {{ pagination.total }}개</p>
+        {% if search_query %}
+        <p><strong>검색 결과:</strong> {{ pagination.total }}개</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

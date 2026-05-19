@@ -1,0 +1,158 @@
+{
+  "tech_stack": [
+    "Python",
+    "Flask",
+    "SQLite",
+    "Jinja2",
+    "Flask-Login",
+    "Flask-WTF",
+    "SQLAlchemy",
+    "Pillow",
+    "Bleach",
+    "pytest"
+  ],
+  "features": [
+    {
+      "name": "사용자 인증",
+      "description": "회원가입, 로그인, 로그아웃, 프로필 관리 기능",
+      "files": [
+        "app/routes/auth.py",
+        "app/templates/auth/register.html",
+        "app/templates/auth/login.html",
+        "app/templates/auth/profile.html",
+        "app/models.py"
+      ]
+    },
+    {
+      "name": "비디오 업로드 및 관리",
+      "description": "비디오 파일 업로드, 썸네일 업로드, 비디오 수정 및 삭제 기능",
+      "files": [
+        "app/routes/studio.py",
+        "app/templates/studio/upload.html",
+        "app/templates/studio/edit.html",
+        "app/templates/studio/index.html",
+        "app/models.py"
+      ]
+    },
+    {
+      "name": "비디오 시청",
+      "description": "비디오 재생, 조회수 증가, 비디오 상세 정보 표시",
+      "files": [
+        "app/routes/main.py",
+        "app/templates/main/watch.html",
+        "app/models.py"
+      ]
+    },
+    {
+      "name": "비디오 목록 및 검색",
+      "description": "메인 페이지 비디오 목록, 검색 기능, 정렬 및 필터링",
+      "files": [
+        "app/routes/main.py",
+        "app/templates/main/index.html",
+        "app/templates/main/search.html",
+        "app/models.py"
+      ]
+    },
+    {
+      "name": "댓글 시스템",
+      "description": "댓글 작성, 수정, 삭제, 대댓글 기능, 댓글 좋아요/싫어요",
+      "files": [
+        "app/routes/comments.py",
+        "app/routes/comment_likes.py",
+        "app/models.py"
+      ]
+    },
+    {
+      "name": "좋아요/싫어요",
+      "description": "비디오 좋아요/싫어요 기능",
+      "files": [
+        "app/routes/likes.py",
+        "app/models.py"
+      ]
+    },
+    {
+      "name": "구독 기능",
+      "description": "사용자 구독, 구독 취소, 구독 피드",
+      "files": [
+        "app/routes/subscriptions.py",
+        "app/templates/main/subscriptions.html",
+        "app/models.py"
+      ]
+    },
+    {
+      "name": "사용자 프로필",
+      "description": "사용자 프로필 페이지, 사용자별 비디오 목록",
+      "files": [
+        "app/routes/main.py",
+        "app/templates/main/user_profile.html",
+        "app/models.py"
+      ]
+    },
+    {
+      "name": "스튜디오 통계",
+      "description": "내 비디오 통계 대시보드, 조회수, 좋아요 수 등 통계",
+      "files": [
+        "app/routes/studio.py",
+        "app/templates/studio/index.html",
+        "app/models.py"
+      ]
+    },
+    {
+      "name": "태그 및 카테고리",
+      "description": "비디오 태그 기능, 카테고리별 필터링",
+      "files": [
+        "app/routes/main.py",
+        "app/templates/main/tag.html",
+        "app/models.py"
+      ]
+    },
+    {
+      "name": "관리자 기능",
+      "description": "관리자 대시보드, 회원 관리, 비디오 관리, 댓글 관리, 데이터베이스 관리",
+      "files": [
+        "app/routes/admin.py",
+        "app/templates/admin/index.html",
+        "app/templates/admin/users.html",
+        "app/templates/admin/videos.html",
+        "app/templates/admin/comments.html",
+        "app/templates/admin/database.html",
+        "app/models.py"
+      ]
+    },
+    {
+      "name": "RESTful API",
+      "description": "비디오, 댓글, 좋아요, 구독 등의 RESTful API 엔드포인트",
+      "files": [
+        "app/routes/api.py",
+        "app/models.py"
+      ]
+    },
+    {
+      "name": "파일 업로드 처리",
+      "description": "업로드된 파일 제공, 파일 검증 및 보안 처리",
+      "files": [
+        "app/routes/uploads.py",
+        "app/utils/security.py"
+      ]
+    },
+    {
+      "name": "다크 모드",
+      "description": "라이트/다크 모드 전환 기능",
+      "files": [
+        "app/static/css/style.css",
+        "app/static/js/main.js",
+        "app/templates/base.html"
+      ]
+    },
+    {
+      "name": "반응형 디자인",
+      "description": "모바일, 태블릿, 데스크톱 반응형 레이아웃",
+      "files": [
+        "app/static/css/style.css",
+        "app/templates/base.html",
+        "app/templates/main/index.html"
+      ]
+    }
+  ]
+}
+
